@@ -2,6 +2,8 @@ import os
 from sqlalchemy import create_engine, Column, String, Integer
 from sqlalchemy.orm import sessionmaker, declarative_base
 
+os.system("cls || clear")
+
 # Criando banco de dados
 db = create_engine("sqlite:///meubanco.db")
 # Conexão com o banco de dados
@@ -31,9 +33,15 @@ class Usuario(Base):
 Base.metadata.create_all(bind=db)
 
 # Salvar no banco de dados.
-usuario = Usuario(nome="Rafael", email="Rafaelsd@...", senha="123456")
-session.add(usuario)
-session.commit()
+for i in range(2):
+    nome = input("Digite seu nome: ")
+    email = input("Digite seu e-mail: ")
+    senha = input("Digite seu senha: ")
+
+    usuario = Usuario(nome=nome,email=email, senha=senha)
+    session.add(usuario)
+    session.commit()
+    print()
 
 # Mostrando conteúdo do bando de dados.
 print("Lista de usuários do banco de dados: ")
@@ -43,11 +51,43 @@ for usuario in lista_usuarios:
     print(f"{usuario.id} - {usuario.nome} - {usuario.email} - {usuario.senha}")
 
 # Deletando um usuário.
-usuario = session.query(Usuario).filter_by(email = "Rafaelsd@...").first()
-session.delete(usuario)
-session.commit()
-print(f"Usuário {usuario.nome} foi deletado com sucesso!")
+print("\nExcluindo usuário no banco de dados: ")
+email_usuario = input("Informe o e-mail do usuário: ")
+usuario = session.query(Usuario).filter_by(email = email_usuario).first()
+if usuario:
+    session.delete(usuario)
+    session.commit()
+    print(f"Usuário {usuario.nome} foi deletado com sucesso!")
+else:
+    print("Usuário não encontrado.")
 
 # Mostrando conteúdo do bando de dados.
 print("\nLista de usuários do banco de dados: ")
 lista_usuarios = session.query(Usuario).all()
+
+# Atualizar um  usuário.
+print("\nAtualizando os dados de um usuário: ")
+email_usuario = input("Informe o e-mail do usuário: ")
+
+usuario = session.query(Usuario).filter_by(email = email_usuario ).first()
+
+if usuario:
+    usuario.nome = input("Digite seu nome: ")
+    usuario.email = input("Digite seu e-mail: ")
+    usuario.senha = input("Digite seu senha: ")
+    session.commit()
+else:
+    print("Usuário não encontrado.")
+
+# Pesquisando um usuário.
+print("\nPesquisando um usuário pelo e-mail: ")
+email_usuario = input("Informe o e-mail do usuário: ")
+
+usuario = session.query(Usuario).filter_by(email = email_usuario ).first()
+if usuario:
+    print(f"{usuario.id} - {usuario.nome} - {usuario.email} - {usuario.senha}")
+else:
+    print("Usuário não encontrado.")
+
+#Fechando conexão
+session.close()
